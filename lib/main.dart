@@ -151,7 +151,7 @@ class Data1WState extends State<Data1W> {
     for (int i = 1; i <= 20; i++) {
       listData.add(Data(
         kode: "KODE$i",
-        nama: "Nama$i",
+        nama: "Nama Perusahaan $i",
         vol: "${i * 5}M",
         turnOver: "${i * 32.75}B",
         harga: "${i * 100}",
