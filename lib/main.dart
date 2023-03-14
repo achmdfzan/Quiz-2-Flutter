@@ -4,112 +4,311 @@ void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MyApp extends StatefulWidget {
+  const MyApp({Key? key}) : super(key: key);
+  @override
+  MyAppState createState() {
+    return MyAppState();
+  }
+}
 
-  // This widget is the root of your application.
+class MyAppState extends State<MyApp> {
+  String valuePertama = "Active Turn Over";
+  String valueKedua = "1D";
+
   @override
   Widget build(BuildContext context) {
+    List<DropdownMenuItem<String>> itemsPertama = [
+      const DropdownMenuItem<String>(
+        value: "Active Turn Over",
+        child: Text("Active Turn Over"),
+      ),
+      const DropdownMenuItem<String>(
+        value: "Active Volume",
+        child: Text("Active Volume"),
+      ),
+    ];
+
+    List<DropdownMenuItem<String>> itemsKedua = [
+      const DropdownMenuItem<String>(
+        value: "1D",
+        child: Text("1D"),
+      ),
+      const DropdownMenuItem<String>(
+        value: "1W",
+        child: Text("1W"),
+      ),
+    ];
+
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+      debugShowCheckedModeBanner: false,
+      title: 'Hello App',
+      home: Scaffold(
+        appBar: AppBar(
+            leading: const FlutterLogo(),
+            backgroundColor: Colors.blueGrey,
+            title: const Text('Quiz Flutter'),
+            actions: const <Widget>[ButtonNamaKelompok(), ButtonPerjanjian()]),
+        body: Column(
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: DropdownButton(
+                    isExpanded: true,
+                    value: valuePertama,
+                    items: itemsPertama,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        if (newValue != null) {
+                          valuePertama = newValue;
+                        }
+                      });
+                    },
+                  ),
+                ),
+                DropdownButton(
+                  value: valueKedua,
+                  items: itemsKedua,
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      if (newValue != null) {
+                        valueKedua = newValue;
+                      }
+                    });
+                  },
+                ),
+              ],
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+            Expanded(
+              child: (valueKedua == "1D" ? const Data1D() : const Data1W()),
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+    );
+  }
+}
+
+class Data1D extends StatefulWidget {
+  const Data1D({Key? key}) : super(key: key);
+  @override
+  State<StatefulWidget> createState() {
+    return Data1DState();
+  }
+}
+
+class Data1DState extends State<Data1D> {
+  List<Data> listData = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    for (int i = 1; i <= 20; i++) {
+      listData.add(Data(
+        kode: "KODE$i",
+        nama: "Nama Perusahaan $i",
+        vol: "${i * 5}M",
+        turnOver: "${i * 32.75}B",
+        harga: "${i * 100}",
+        naikTurun: "${i % 2 == 0 ? '-' : '+'}$i",
+        pctNaikTurun: "${i % 2 == 0 ? '-' : '+'}$i%",
+      ));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: listData.length,
+      itemBuilder: (context, index) {
+        return Container(
+          decoration: BoxDecoration(border: Border.all()),
+          padding: const EdgeInsets.all(14),
+          child: listData[index],
+        );
+      },
+    );
+  }
+}
+
+class Data1W extends StatefulWidget {
+  const Data1W({Key? key}) : super(key: key);
+  @override
+  State<StatefulWidget> createState() {
+    return Data1WState();
+  }
+}
+
+class Data1WState extends State<Data1W> {
+  List<Data> listData = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    for (int i = 1; i <= 20; i++) {
+      listData.add(Data(
+        kode: "KODE$i",
+        nama: "Nama$i",
+        vol: "${i * 5}M",
+        turnOver: "${i * 32.75}B",
+        harga: "${i * 100}",
+        naikTurun: "${i % 3 == 0 ? '-' : '+'}${i * 7}",
+        pctNaikTurun: "${i % 3 == 0 ? '-' : '+'}${i * 7}%",
+      ));
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: listData.length,
+      itemBuilder: (context, index) {
+        return Container(
+          decoration: BoxDecoration(border: Border.all()),
+          padding: const EdgeInsets.all(14),
+          child: listData[index],
+        );
+      },
+    );
+  }
+}
+
+class Data extends StatelessWidget {
+  final String kode;
+  final String nama;
+  final String vol;
+  final String turnOver;
+  final String harga;
+  final String naikTurun;
+  final String pctNaikTurun;
+
+  const Data({
+    Key? key,
+    required this.kode,
+    required this.nama,
+    required this.vol,
+    required this.turnOver,
+    required this.harga,
+    required this.naikTurun,
+    required this.pctNaikTurun,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    bool isGreen = naikTurun[0] == '+' ? true : false;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Column(
+          children: [
+            Text(
+              kode,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 17,
+              ),
+            ),
+            const Text("Volume"),
+            const Text("Turn Over"),
+          ],
+        ),
+        Column(
+          children: [
+            Text(nama, style: const TextStyle(fontWeight: FontWeight.bold)),
+            Text(vol),
+            Text(turnOver)
+          ],
+        ),
+        Container(
+          padding: const EdgeInsets.fromLTRB(0, 0, 0, 25),
+          child: Text(
+            harga,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: isGreen ? Colors.green : Colors.red,
+              fontSize: 16,
+            ),
+          ),
+        ),
+        Container(
+          width: 75,
+          height: 75,
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            border: Border.all(),
+            color: isGreen ? Colors.green : Colors.red,
+          ),
+          child: Column(
+            children: [
+              Text(
+                naikTurun,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              Text(
+                pctNaikTurun,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class ButtonNamaKelompok extends StatelessWidget {
+  const ButtonNamaKelompok({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: const Icon(Icons.account_circle_rounded),
+      onPressed: () {
+        // icon account di tap
+        showDialog<String>(
+          context: context,
+          builder: (BuildContext context) => AlertDialog(
+            title: const Text('Kelompok 6 C1'),
+            content: const Text(
+                'Achmad Fauzan\n(achmdfzan@upi.edu)\n\nAnandita Kusumah Mulyadi\n(ananditakusumahm@upi.edu)'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.pop(context, 'OK'),
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class ButtonPerjanjian extends StatelessWidget {
+  const ButtonPerjanjian({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: const Icon(Icons.access_alarm_rounded),
+      onPressed: () {
+        // icon setting ditap
+        const snackBar = SnackBar(
+          duration: Duration(seconds: 20),
+          content: Text(
+              'Kami berjanji tidak akan berbuat curang dan atau membantu kelompok lain berbuat curang'),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      },
     );
   }
 }
